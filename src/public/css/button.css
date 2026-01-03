@@ -1,0 +1,42 @@
+.btn-scan {
+    background: rgba(142, 14, 0, 0.2);
+    color: #ffffff;
+    border: 2px solid #8e0e00;
+    padding: 12px 30px;
+    font-size: 16px;
+    font-family: 'Fira Code', monospace;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(142, 14, 0, 0.3);
+}
+
+
+
+@media (hover: hover) {
+    .btn-scan:hover {
+        background: #8e0e00;
+        box-shadow: 0 0 30px rgba(142, 14, 0, 0.8), 0 0 10px rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+        text-shadow: 0 0 5px #fff;
+    }
+
+    .btn-scan:active {
+        transform: translateY(1px);
+        box-shadow: 0 0 10px rgba(142, 14, 0, 0.5);
+    }
+}
+
+
+.btn-scan-touch {
+    background: #8e0e00 !important;
+    box-shadow: 0 0 30px rgba(142, 14, 0, 0.8), 0 0 10px rgba(255, 255, 255, 0.2) !important;
+    transform: scale(0.95);
+    transition: 0.1s;
+    text-shadow: 0 0 5px #fff
+}
