@@ -44,10 +44,10 @@ app.post("/scan", async (req, res) => {
             
             if (response.status.toString()[0] !== "1") {
                 found_dirs.push({ url: dir, code: response.status });
-                console.log("FOUND")
+                console.log("FOUND", url);
             }
         } catch (err) {
-            //console.log(`scanned ${url}, ${err}`);
+            console.log(`scanned ${url}, ${err}`);
         }
     }
 
