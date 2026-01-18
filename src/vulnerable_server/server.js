@@ -18,7 +18,7 @@ app.get('/private', (req, res) => {
 });
 
 
-const port = process.env.VULNERABLE_SERVER_PORT
+const port = process.env.VULNERABLE_SERVER_PORT || 3000
 app.listen(port, () => {
     console.log(`Уязвимый сервер запущен на порте ${port}`);
 });

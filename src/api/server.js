@@ -102,7 +102,7 @@ wss.on("connection", (ws) => {
 app.use("/", express.static(path.join(__dirname, "..", "public"))); // to serve statics
 
 
-const port = process.env.SCANNER_PORT;
+const port = process.env.SCANNER_PORT || 80;
 server.listen(port, () => {
     console.log(`Сканер запущен на порте ${port}`);
 });
