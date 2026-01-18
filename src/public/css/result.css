@@ -1,3 +1,8 @@
+.scan-window-container {
+    display: flex;
+    gap: 30px;
+}
+
 .scan-window {
     background: rgba(20, 20, 20, 0.85); 
     backdrop-filter: blur(10px);
@@ -9,8 +14,12 @@
     margin: 40px auto;
     overflow: hidden;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    
 }
 
+#headers-scan-window {
+    width: 50vh;
+}
 
 .scan-header {
     background: rgba(255, 255, 255, 0.05);
@@ -74,7 +83,7 @@
 .dir { color: #dcdde1; }
 
 
-.counter {
+#counter, #header, #header-counter {
     user-select: none;
 }
 

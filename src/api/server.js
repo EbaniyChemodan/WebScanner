@@ -18,6 +18,15 @@ import { scan_dirs } from "./word_lists.js";
 
 let scans = {}; // store sessions
 
+const security_headers = [
+    'Strict-Transport-Security',
+    'X-Content-Type-Options',
+    'X-Frame-Options', 
+    'Content-Security-Policy',
+    'X-XSS-Protection',
+    'Referrer-Policy'
+];
+
 
 async function brute(data) {
     const resource = data.resource;
@@ -55,6 +64,34 @@ async function brute(data) {
 }
 
 
+async function scan_headers(data) {
+    try {
+        const response = await axios.head(data.resource, { 
+            timeout: data.timeout || 200, 
+            validateStatus: (status) => status
+        });
+
+        const headers = response.headers;
+        
+        const results = [];
+    
+        
+        security_headers.forEach(header => {
+            const key = header.toLowerCase();
+            results.push([header, headers[key] || null]);
+        });
+        
+
+        scans[data.session].ws.send(JSON.stringify({ action: "headers", headers: results }));
+
+        return results;
+        
+    } catch (error) {
+        scans[data.session].ws.send(JSON.stringify({ action: "headers", error: true, message: "Headers check failed!" }));
+        console.warn("Check failed", error.message)
+    }
+}
+
 
 const app = express();
 
@@ -76,6 +113,7 @@ wss.on("connection", (ws) => {
         switch (parsed_message.action) {
             case "scan":
                 if (!parsed_message.session) return;
+                scan_headers(parsed_message);
                 brute(parsed_message);
                 break;
             case "init":

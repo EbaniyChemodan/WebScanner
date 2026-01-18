@@ -1,5 +1,7 @@
 const results_div = document.getElementById('results');
+const header_results_div = document.getElementById("header-results");
 const count_span = document.getElementById('counter');
+const header_counter = document.getElementById('header-counter')
 const target = document.getElementById('target-input');
 const scan_button = document.getElementById("start-scan-button");
 
@@ -18,7 +20,16 @@ ws.onopen = () => {
         const response = JSON.parse(event.data)
         switch (response.action) {
             case "add":
-                addResult(response.url, response.code);
+                addResult(results_div, response.url, response.code);
+                break;
+            case "headers":
+                if (response.error) break;
+
+                for (let header of response.headers) {
+                    console.log(header);
+                    addResult(header_results_div, header[0], header[1] || "❌", true);
+                }
+
                 break;
             case "session":
                 localStorage.setItem("session", response.session);
@@ -37,7 +48,7 @@ function set_loading(value) {
 }
 
 
-function addResult(path, status) {
+function addResult(results_div, path, status, is_header) {
     const item = document.createElement('div');
     item.className = 'result-item';
     
@@ -59,16 +70,29 @@ function addResult(path, status) {
         status_class = "status-403"
     }
     
+
+    if (is_header) {
+        item.innerHTML = `
+            <span class="dir">${path}</span>
+            <span>⠀</span>
+            <span class="dir">${status}</span>
+        `;
+    } else {
+        item.innerHTML = `
+            <span class="dir">/${path}</span>
+            <span class="${status_class}">[${status}]</span>
+        `;
+    }
     
-    item.innerHTML = `
-        <span class="dir">/${path}</span>
-        <span class="${status_class}">[${status}]</span>
-    `;
     
     results_div.appendChild(item);
 
-
-    count_span.innerText = `Найдено: ${results_div.children.length}`;
+    if (is_header) {
+        header_counter.innerText = `Найдено: ${results_div.children.length}`;
+    } else {
+        count_span.innerText = `Найдено: ${results_div.children.length}`;
+    }
+    
     results_div.scrollTop = results_div.scrollHeight;
 }
 
@@ -94,6 +118,7 @@ async function start_scan() {
         return;
     };
 
+
     scanning = true;
     scan_button.innerText = "Остановить скан";
 
@@ -102,6 +127,7 @@ async function start_scan() {
 
     count_span.innerText = "Найдено: 0";
     results_div.innerHTML = "";
+    header_results_div.innerHTML = "";
     
     set_loading(true);
 

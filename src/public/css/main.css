@@ -51,6 +51,9 @@ body {
     border-width: 2px;
     border-color: #470303;
 
+    field-sizing: content;
+    min-width: 15vh;
+
     height: 20px;
 }
 
