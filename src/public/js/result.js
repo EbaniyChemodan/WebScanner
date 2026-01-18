@@ -5,6 +5,32 @@ const scan_button = document.getElementById("start-scan-button");
 
 target.value = localStorage.getItem("last_input");
 
+// websocket here
+
+const ws = new WebSocket("ws://localhost");
+set_loading(true)
+
+ws.onopen = () => {
+    ws.send(JSON.stringify({action: "init", session: localStorage.getItem("session")}));
+    set_loading(false);
+
+    ws.onmessage = (event) => {
+        const response = JSON.parse(event.data)
+        switch (response.action) {
+            case "add":
+                addResult(response.url, response.code);
+                break;
+            case "session":
+                localStorage.setItem("session", response.session);
+                break;
+            case "finish":
+                set_loading(false);
+                scanning = false;
+                scan_button.innerText = "Начать скан";
+                break;
+        }
+    }
+}
 
 function set_loading(value) {
     document.getElementById("left-bottom-spinner-background").style.display = value ? "flex" : "none";
@@ -58,9 +84,18 @@ async function start_scan() {
         return;
     }
 
-    if (scanning) return;
+    if (scanning) {
+        ws.send(JSON.stringify({ action: "stop", session: localStorage.getItem("session") }));
+        scan_button.innerText = "Начать скан";
+
+        set_loading(false);
+        scanning = false;
+
+        return;
+    };
 
     scanning = true;
+    scan_button.innerText = "Остановить скан";
 
     localStorage.setItem("last_input", target_resource);
 
@@ -71,31 +106,11 @@ async function start_scan() {
     set_loading(true);
 
     try {
-        const response = await fetch("/scan", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({url: target_resource})
-        });
-
-        const data = await response.json();
-
-        for (let path of data.content) {
-            addResult(path.url, path.code);
-        }
-
-        if (!data.content[0]) {
-            addResult(false);
-        }
+        ws.send(JSON.stringify({ resource: target_resource, action: "scan", session: localStorage.getItem("session") }))
     } catch (err) {
         console.warn(err)
     }
     
-
-    set_loading(false);
-
-    scanning = false;
 
 }
 
