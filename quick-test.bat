@@ -4,6 +4,6 @@ start "Уязвимый сервер" cmd /K "node ./src/vulnerable_server/serve
 start "Сканнер" cmd /K "node ./src/api/server.js"
 
 echo >>> localhost:80 - Сканнер
-echo >>> localhost:3001 - Уязвимый сервер
+echo >>> localhost:3000 - Уязвимый сервер
 
 pause
